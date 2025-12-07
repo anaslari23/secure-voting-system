@@ -43,3 +43,29 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Security & Secrets
+*.pem
+*.key
+*.crt
+*.p12
+.env
+.env.local
+.env.*.local
+trustee_storage/
+election_public_key.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+backend*.log

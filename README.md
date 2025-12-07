@@ -18,20 +18,95 @@ The architecture is specifically contextualized for the **Indian electoral syste
 
 ---
 
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.9 or higher
+- OpenSSL (for certificate generation)
+- Git
+
+### Installation (5 minutes)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/secure_voting_system.git
+cd secure_voting_system
+
+# 2. Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Generate SSL certificates (for HTTPS)
+bash scripts/generate_certs.sh
+
+# 5. Initialize the database
+cd backend
+python -c "from src.db import init_db; init_db()"
+
+# 6. Start the server
+python app.py
+```
+
+### Demo Voting Flow
+
+The server will display valid mock Aadhaar IDs on startup. Use any of these to test:
+
+```bash
+# Example voter IDs (displayed on server start):
+# 123456789012, 234567890123, 345678901234, etc.
+
+# 1. Open browser to https://localhost:5001
+# 2. Enter a mock Aadhaar ID (e.g., 123456789012)
+# 3. Enter the OTP displayed in server console
+# 4. Cast your vote (YES/NO)
+# 5. Receive cryptographic receipt with QR code
+```
+
+### Quick Demo Commands
+
+```bash
+# Run automated tests
+pytest backend/ -v
+
+# Check code quality
+flake8 backend/
+
+# Security scan
+bandit -r backend/
+
+# Close election and view results
+curl https://localhost:5001/admin/close -k
+# Then visit: https://localhost:5001/results
+```
+
+### Security Note
+⚠️ The server uses **self-signed SSL certificates** for development. Your browser will show a security warning - this is expected. Click "Advanced" → "Proceed to localhost" to continue.
+
+For production deployment, obtain certificates from a trusted Certificate Authority (Let's Encrypt, DigiCert, etc.).
+
+---
+
 ## Table of Contents
 
-1. [Introduction & Motivation](#1-introduction--motivation)
-2. [Background & Related Work](#2-background--related-work)
-3. [System Model & Threat Assumptions](#3-system-model--threat-assumptions)
-4. [Cryptographic Primitives](#4-cryptographic-primitives)
-5. [System Architecture](#5-system-architecture)
-6. [Protocol Specification](#6-protocol-specification)
-7. [Security Analysis](#7-security-analysis)
-8. [Implementation Details](#8-implementation-details)
-9. [Indian Election Context](#9-indian-election-context)
-10. [Installation & Deployment](#10-installation--deployment)
-11. [Future Work & Limitations](#11-future-work--limitations)
-12. [References & Further Reading](#12-references--further-reading)
+1. [Quick Start](#-quick-start) ⭐
+2. [Introduction & Motivation](#1-introduction--motivation)
+3. [Background & Related Work](#2-background--related-work)
+4. [System Model & Threat Assumptions](#3-system-model--threat-assumptions)
+5. [Cryptographic Primitives](#4-cryptographic-primitives)
+6. [System Architecture](#5-system-architecture)
+7. [Protocol Specification](#6-protocol-specification)
+8. [Security Analysis](#7-security-analysis)
+9. [Implementation Details](#8-implementation-details)
+10. [Indian Election Context](#9-indian-election-context)
+11. [Installation & Deployment](#10-installation--deployment)
+12. [Development](#development) ⭐
+13. [Security Considerations](#security-considerations) ⭐
+14. [Future Work & Limitations](#11-future-work--limitations)
+15. [References & Further Reading](#12-references--further-reading)
+
 
 ---
 
@@ -1163,7 +1238,193 @@ python scripts/distribute_shares.py \
 
 ---
 
+---
+
+## Development
+
+### Setting Up Development Environment
+
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Run tests with coverage
+pytest backend/ scripts/ -v --cov=backend --cov-report=html
+
+# View coverage report
+open htmlcov/index.html  # macOS
+# or: xdg-open htmlcov/index.html  # Linux
+```
+
+### Code Quality Tools
+
+```bash
+# Format code with black
+black backend/
+
+# Sort imports
+isort backend/
+
+# Lint with flake8
+flake8 backend/ --max-line-length=127
+
+# Type checking
+mypy backend/
+
+# Security scanning
+bandit -r backend/ -ll
+safety check
+```
+
+### Running Tests
+
+```bash
+# Run all tests
+pytest backend/ -v
+
+# Run specific test file
+pytest backend/test_app_integration.py -v
+
+# Run with coverage
+pytest --cov=backend --cov-report=term-missing
+
+# Run integration tests
+pytest scripts/test_app_integration.py -v
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes
+4. Run tests and linting: `pytest && flake8 backend/`
+5. Commit your changes: `git commit -m 'Add amazing feature'`
+6. Push to the branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
+
+**Note**: All PRs must pass CI checks (tests, linting, security scans) before merging.
+
+### Project Structure
+
+```
+secure_voting_system/
+├── .github/
+│   ├── workflows/
+│   │   └── ci.yml              # GitHub Actions CI pipeline
+│   └── dependabot.yml          # Dependency update automation
+├── backend/
+│   ├── app.py                  # Flask application entry point
+│   ├── src/
+│   │   ├── voting.py           # Ballot encryption logic
+│   │   ├── zkp.py              # Zero-knowledge proofs
+│   │   ├── tally.py            # Homomorphic tallying
+│   │   ├── sss.py              # Shamir's Secret Sharing
+│   │   ├── hybrid_sss.py       # Encrypted key storage
+│   │   ├── merkle_log.py       # Merkle tree implementation
+│   │   ├── bulletin_board.py   # Public ledger
+│   │   └── db.py               # Database operations
+│   ├── templates/              # HTML templates
+│   └── static/                 # CSS, JavaScript
+├── scripts/
+│   ├── demo.py                 # Demo utilities
+│   └── generate_certs.sh       # SSL certificate generation
+├── .env.example                # Environment variable template
+├── .gitignore                  # Git ignore patterns
+├── requirements.txt            # Production dependencies
+├── requirements-dev.txt        # Development dependencies
+├── SECURITY.md                 # Security policy
+└── README.md                   # This file
+```
+
+---
+
+## Security Considerations
+
+### For Developers
+
+**Never Commit Secrets**
+- SSL certificates, private keys, and API keys must never be committed to the repository
+- Use `.env` files for local configuration (already in `.gitignore`)
+- Use environment variables for production secrets
+
+**Generate Certificates Locally**
+```bash
+# Generate self-signed certificates for development
+bash scripts/generate_certs.sh
+
+# For production, use Let's Encrypt or a trusted CA
+certbot certonly --standalone -d yourdomain.com
+```
+
+**Secret Rotation**
+If secrets are accidentally committed:
+1. Immediately rotate the compromised credentials
+2. Remove from git history: `git filter-branch` or BFG Repo-Cleaner
+3. Force push to remote (coordinate with team)
+4. Update all deployment environments
+
+### For Deployment
+
+**Production Checklist**
+- [ ] Use strong, randomly generated Flask secret key (not `os.urandom(24)`)
+- [ ] Obtain SSL certificates from trusted CA (Let's Encrypt, DigiCert)
+- [ ] Enable HTTPS only (disable HTTP)
+- [ ] Implement rate limiting on authentication endpoints
+- [ ] Use secure session management (httponly, secure, samesite cookies)
+- [ ] Enable database encryption at rest
+- [ ] Set up comprehensive logging and monitoring
+- [ ] Implement intrusion detection
+- [ ] Regular security audits and penetration testing
+- [ ] Backup trustee key shares in secure, geographically distributed locations
+
+**Environment Variables**
+```bash
+# Production configuration
+export FLASK_SECRET_KEY="$(openssl rand -hex 32)"
+export DATABASE_PATH="/secure/path/to/production.db"
+export SSL_CERT_PATH="/etc/letsencrypt/live/yourdomain/fullchain.pem"
+export SSL_KEY_PATH="/etc/letsencrypt/live/yourdomain/privkey.pem"
+export FLASK_ENV="production"
+export FLASK_DEBUG="False"
+```
+
+**Trustee Key Management**
+- Store trustee shares in Hardware Security Modules (HSMs)
+- Use multi-party computation for key generation
+- Implement key ceremony with witnesses
+- Maintain audit logs of all key operations
+- Never store complete private key in one location
+
+### Vulnerability Reporting
+
+If you discover a security vulnerability, please follow our [Security Policy](SECURITY.md):
+- **DO NOT** open a public GitHub issue
+- Email security contacts listed in SECURITY.md
+- Provide detailed reproduction steps
+- Allow reasonable time for patching before public disclosure
+
+### Known Limitations
+
+This is a **demonstration/educational project**. For production use:
+- ⚠️ **Coercion Resistance**: Limited protection against vote-buying/coercion
+- ⚠️ **Client Security**: Assumes voter device is not compromised
+- ⚠️ **Quantum Resistance**: Paillier encryption vulnerable to quantum computers
+- ⚠️ **Scalability**: Not optimized for millions of concurrent voters
+- ⚠️ **Accessibility**: Limited support for voters with disabilities
+
+**Recommended Enhancements for Production:**
+- Implement receipt-free voting (e.g., JCJ/Civitas protocol)
+- Add panic passwords for coercion scenarios
+- Use post-quantum cryptography (lattice-based schemes)
+- Implement distributed bulletin board (blockchain/consensus)
+- Add comprehensive accessibility features (screen readers, voice voting)
+- Professional security audit by certified firm
+- Compliance with election security standards (EAC, IEEE 1622)
+
+---
+
 ## Appendix A: Mathematical Notation
+
 
 | Symbol | Meaning |
 |--------|---------|
