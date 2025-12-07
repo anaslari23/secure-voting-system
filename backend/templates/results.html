@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECI Election Results 2029</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Hind:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/gov_style.css">
+    <style>
+        .result-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .winner-banner {
+            background: linear-gradient(135deg, #FF9933 0%, #FFFFFF 50%, #138808 100%);
+            /* India Flag Gradient */
+            color: #1A1A1A;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: popIn 0.5s ease-out;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .big-number {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 1rem 0;
+            color: var(--gov-blue);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        .status-open {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+
+        .status-closed {
+            background: #FFEBEE;
+            color: #D32F2F;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="gov-header">
+        <div class="eci-logo"></div>
+        <div class="header-title">Election Commission of India</div>
+        <div class="header-subtitle">GENERAL ELECTION 2029 - RESULTS</div>
+    </header>
+
+    <main class="flex flex-col items-center justify-center" style="min-height: 80vh; padding: 2rem;">
+
+        <div class="card-container" style="max-width: 600px;">
+            <div class="text-center" style="margin-bottom: 2rem;">
+                {% if open %}
+                <span class="status-badge status-open"> ● Polls Open </span>
+                {% else %}
+                <span class="status-badge status-closed"> ● Final Declaration </span>
+                {% endif %}
+            </div>
+
+            {% if open %}
+            <div class="result-card">
+                <h2>Election in Progress</h2>
+                <p class="text-secondary">To ensure fairness, results are encrypted and hidden until the election is
+                    officially closed.</p>
+                <div style="font-size: 60px; margin: 2rem;">🔒</div>
+            </div>
+            {% else %}
+            <div class="result-card" style="border-top: 5px solid var(--success-green);">
+                <h2>Final Tally</h2>
+                <p style="color: #666; margin-bottom: 2rem;">Valid votes decrypted via Threshold Homomorphic Encryption
+                </p>
+
+                {% if winner == "YES" %}
+                <div class="winner-banner" style="border: 4px solid var(--success-green);">
+                    <div style="font-size: 14px; font-weight: 700; color: var(--success-green);">THE PEOPLE HAVE SPOKEN
+                    </div>
+                    <h1 style="margin: 0.5rem 0; font-size: 32px;">YES WINS 🏆</h1>
+                </div>
+                {% elif winner == "NO" %}
+                <div class="winner-banner" style="border: 4px solid #D32F2F;">
+                    <div style="font-size: 14px; font-weight: 700; color: #D32F2F;">THE PEOPLE HAVE SPOKEN</div>
+                    <h1 style="margin: 0.5rem 0; font-size: 32px;">NO WINS 🏆</h1>
+                </div>
+                {% else %}
+                <div class="winner-banner" style="border: 4px solid var(--saffron);">
+                    <div style="font-size: 14px; font-weight: 700; color: var(--saffron);">IT'S A DRAW</div>
+                    <h1 style="margin: 0.5rem 0; font-size: 32px;">ELECTION TIED ⚖️</h1>
+                </div>
+                {% endif %}
+
+                <div class="flex" style="justify-content: space-around; margin-bottom: 2rem;">
+                    <div>
+                        <div class="big-number" style="color: var(--success-green);">{{ yes_votes }}</div>
+                        <div style="font-weight: 700;">YES (Approve)</div>
+                    </div>
+                    <div>
+                        <div class="big-number" style="color: var(--text-grey);">{{ no_votes }}</div>
+                        <div style="font-weight: 700;">NO (Reject)</div>
+                    </div>
+                </div>
+
+                <div style="background: #f5f5f5; padding: 1rem; border-radius: 4px;">
+                    <strong>Total Ballots Cast:</strong> {{ total_votes }}
+                </div>
+            </div>
+
+            <div class="text-center">
+                <p style="color: var(--success-green); font-weight: 600;">✅ Decryption Verified by 3 Trustee Keys</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </main>
+
+    <div class="footer-bar"></div>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECI Secure Voting - Ballot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gov_style.css') }}">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="gov-header" style="background: var(--gov-blue); color: white; border-bottom: none; padding: 1rem;">
+        <div style="font-size: 14px; opacity: 0.8;">Constituency: NEW DELHI (07)</div>
+        <div style="font-size: 20px; font-weight: 700;">DIGITAL BALLOT UNIT</div>
+        <div style="font-size: 14px; margin-top: 0.5rem;">Voter: {{ name }}</div>
+    </header>
+
+    <!-- BALLOT LIST -->
+    <main class="evm-list">
+
+        <!-- Candidate 1 -->
+        <div class="evm-card">
+            <div class="candidate-photo">👤</div>
+            <div class="candidate-info">
+                <span class="c-name">RAJESH KUMAR</span>
+                <span class="c-party">Progress Party</span>
+            </div>
+            <div class="party-symbol" style="color: orange;">🪷</div>
+            <div class="vote-btn-container">
+                <button class="evm-btn" onclick="castVote(1)"></button>
+            </div>
+        </div>
+
+        <!-- Candidate 2 -->
+        <div class="evm-card">
+            <div class="candidate-photo">👤</div>
+            <div class="candidate-info">
+                <span class="c-name">ANITA DESAI</span>
+                <span class="c-party">People's Union</span>
+            </div>
+            <div class="party-symbol" style="color: blue;">✋</div>
+            <div class="vote-btn-container">
+                <button class="evm-btn" onclick="castVote(0)"></button>
+            </div>
+        </div>
+
+        <!-- NOTA -->
+        <div class="evm-card">
+            <div class="candidate-photo">🚫</div>
+            <div class="candidate-info">
+                <span class="c-name">NOTA</span>
+                <span class="c-party">None of the Above</span>
+            </div>
+            <div class="party-symbol" style="color: grey;">⬛</div>
+            <div class="vote-btn-container">
+                <button class="evm-btn" onclick="castVote(0)"></button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PROCESSING OVERLAY -->
+    <div id="processing" class="text-center w-full hidden"
+        style="position:fixed; top:0; left:0; height:100%; background:white; z-index:100; padding-top: 40vh;">
+        <h2 style="color: var(--gov-blue);">Encrypting Vote...</h2>
+        <p>Generating Zero-Knowledge Proof</p>
+    </div>
+
+    <div class="footer-bar"></div>
+
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script>
+        // SECURITY: Logout on Page Reload to prevent session reuse
+        if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_RELOAD) {
+            window.location.href = "/logout?voted=false";
+        }
+    
+        async function castVote(val) {
+            if (!confirm("CONFIRM VOTE?\n\nOnce cast, this cannot be changed.")) return;
+
+            document.getElementById('processing').classList.remove('hidden');
+
+            const res = await VotingAPI.vote(val);
+
+            if (res.status === 'success') {
+                window.location.href = "/success";
+            } else {
+                alert("Error: " + res.error);
+                document.getElementById('processing').classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+
+</html>

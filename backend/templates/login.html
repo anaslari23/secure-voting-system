@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECI Secure Voting - Login</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Hind:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gov_style.css') }}">
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="gov-header">
+        <div class="eci-logo"></div> <!-- Placeholder for Lion Emblem -->
+        <div class="header-title">Election Commission of India</div>
+        <div class="header-subtitle">GENERAL ELECTION 2029</div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex flex-col items-center justify-center" style="min-height: 60vh;">
+
+        <div class="card-container">
+            <h2 class="text-center" style="color: var(--gov-blue); margin-bottom: 2rem;">Voter Identity Verification
+            </h2>
+
+            <form id="loginForm">
+                <div class="input-group" id="idGroup">
+                    <label class="input-label">Enter Voter ID / Aadhaar</label>
+                    <input type="text" id="aadhaar" class="gov-input" placeholder="AAAA-BBBB-CCCC" required>
+                </div>
+
+                <div class="input-group" id="otpGroup" style="display: none;">
+                    <label class="input-label">Enter One-Time Password (OTP)</label>
+                    <p class="text-sm" style="color:#666; margin-bottom:5px;">Check your registered mobile number.</p>
+                    <input type="text" id="otp" class="gov-input" placeholder="123456" maxlength="6">
+                </div>
+
+                <div id="errorMsg" class="text-center" style="color: red; margin-bottom: 1rem;">
+                    {% if error %} {{ error }} {% endif %}
+                </div>
+
+                <button type="submit" id="verifyBtn" class="btn-primary">VERIFY IDENTITY</button>
+            </form>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <div class="text-center" style="padding: 1rem;">
+        <span class="btn-secondary" style="background:transparent; color:black; border:1px solid #ccc;">English</span>
+        <span class="btn-secondary"
+            style="background:transparent; color:black; border:1px solid #ccc; margin-left: 0.5rem;">हिंदी</span>
+    </div>
+    <div class="footer-bar"></div>
+
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+    <script>
+        let isOtpStep = false;
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('verifyBtn');
+            const errorDiv = document.getElementById('errorMsg');
+
+            errorDiv.innerText = "";
+
+            if (!isOtpStep) {
+                // Step 1: Request OTP
+                const aadhaar = document.getElementById('aadhaar').value;
+                if (!aadhaar) return;
+
+                btn.innerText = "SENDING OTP...";
+                btn.disabled = true;
+
+                const res = await VotingAPI.login(aadhaar); // Reuses updated api.js structure
+                btn.disabled = false;
+
+                if (res.status === 'otp_sent') {
+                    // Switch UI to OTP mode
+                    isOtpStep = true;
+                    document.getElementById('aadhaar').disabled = true;
+                    document.getElementById('otpGroup').style.display = 'block';
+                    document.getElementById('otp').focus();
+                    btn.innerText = "VERIFY & LOGIN";
+                    // For Demo: Show Alert with OTP (Since we can't SMS)
+                    console.log("OTP Sent (Check Server Logs for Code)");
+                } else {
+                    errorDiv.innerText = res.error || "Verification Failed";
+                    btn.innerText = "VERIFY IDENTITY";
+                }
+            } else {
+                // Step 2: Verify OTP
+                const otp = document.getElementById('otp').value;
+                if (!otp) {
+                    errorDiv.innerText = "Please enter the OTP.";
+                    return;
+                }
+
+                btn.innerText = "VERIFYING...";
+                btn.disabled = true;
+
+                const res = await VotingAPI.verifyOtp(otp);
+
+                if (res.status === 'success') {
+                    window.location.href = "/vote";
+                } else {
+                    errorDiv.innerText = res.error || "Invalid OTP";
+                    btn.innerText = "VERIFY & LOGIN";
+                    btn.disabled = false;
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

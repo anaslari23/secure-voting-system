@@ -1,0 +1,267 @@
+/* --- GOVERNMENT DESIGN SYSTEM --- */
+:root {
+    --gov-blue: #0A5BE0;
+    --gov-white: #FFFFFF;
+    --text-black: #1A1A1A;
+    --text-grey: #666666;
+    --success-green: #008000;
+    --saffron: #FF9933;
+    --india-green: #138808;
+    --bg-light: #F5F7FA;
+}
+
+* {
+    box_sizing: border-box;
+    font-family: 'Inter', 'Hind', sans-serif;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg-light);
+    color: var(--text-black);
+}
+
+/* UTIL CLASSES */
+.text-center {
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.w-full {
+    width: 100%;
+}
+
+/* HEADER */
+.gov-header {
+    background: var(--gov-white);
+    padding: 2rem 1rem;
+    border-bottom: 4px solid var(--saffron);
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.eci-logo {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1rem;
+    /* Placeholder fallback */
+    background-color: var(--gov-blue);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.header-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: var(--gov-blue);
+    text-transform: uppercase;
+}
+
+.header-subtitle {
+    font-size: 24px;
+    font-weight: 900;
+    margin-top: 0.5rem;
+}
+
+/* BUTTONS */
+.btn-primary {
+    background-color: var(--gov-blue);
+    color: white;
+    border: none;
+    padding: 18px 32px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    width: 100%;
+    transition: transform 0.1s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.btn-secondary {
+    background-color: var(--text-black);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* CARDS & INPUTS */
+.card-container {
+    padding: 2rem;
+    max-width: 480px;
+    margin: 2rem auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.gov-input {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.gov-input:focus {
+    border-color: var(--gov-blue);
+    outline: none;
+}
+
+/* EVM BALLOT STYLE */
+.evm-list {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.evm-card {
+    display: flex;
+    align-items: center;
+    background: white;
+    border: 2px solid #E2E8F0;
+    border-radius: 4px;
+    /* Boxy like EVM */
+    margin-bottom: 1rem;
+    height: 100px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.candidate-photo {
+    width: 80px;
+    height: 100%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid #E2E8F0;
+}
+
+.candidate-info {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+.c-name {
+    font-size: 18px;
+    font-weight: 800;
+    display: block;
+}
+
+.c-party {
+    font-size: 14px;
+    color: var(--text-grey);
+}
+
+.party-symbol {
+    width: 80px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 2px solid #E2E8F0;
+    border-left: 2px solid #E2E8F0;
+    font-size: 32px;
+    /* Emoji or Icon */
+}
+
+.vote-btn-container {
+    width: 80px;
+    background: #E0E0E0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.evm-btn {
+    background: var(--gov-blue);
+    width: 40px;
+    height: 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.evm-card:active .evm-btn {
+    background: red;
+}
+
+/* Feedback */
+
+/* VVPAT SUCCESS */
+.vvpat-paper {
+    background: #FFFBE6;
+    border: 1px solid #E2E8F0;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.vvpat-paper::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(135deg, transparent 75%, #FFFBE6 75%) 0 50%,
+        linear-gradient(-135deg, transparent 75%, #FFFBE6 75%) 0 50%;
+    background-size: 20px 20px;
+    transform: rotate(180deg);
+}
+
+/* FOOTER */
+.footer-bar {
+    height: 4px;
+    background: var(--india-green);
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
