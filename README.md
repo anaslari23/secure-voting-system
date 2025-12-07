@@ -1505,8 +1505,6 @@ This project is released under the **MIT License** for educational and research 
 
 **Document Version**: 1.0  
 **Last Updated**: December 2025  
-**Authors**: Secure Voting Research Team  
-**Contact**: [Your Contact Information]
 
 ---
 
