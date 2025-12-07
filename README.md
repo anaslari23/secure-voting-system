@@ -56,26 +56,26 @@ The system is divided into three trust zones: **User (Untrusted)**, **Server (Se
 
 ```mermaid
 graph TD
-    subgraph "Zone 1: Voter (Untrusted Device)"
-        V[Voter 🙋] -->|1. Auth (Aadhaar/OTP)| Kiosk[Voting App 📱]
-        Kiosk -->|2. Create Ballot (v)| Enc[Encryption Module]
-        Enc -->|3. Encrypt: E(v, r)| C[Ciphertext C]
-        Enc -->|4. ZKP: Proof that v ∈ {0,1}| ZKP[ZKP Proof π]
+    subgraph Zone1["Zone 1: Voter (Untrusted Device)"]
+        V["Voter"] -->|"1. Auth (Aadhaar/OTP)"| Kiosk["Voting App"]
+        Kiosk -->|"2. Create Ballot (v)"| Enc["Encryption Module"]
+        Enc -->|"3. Encrypt: E(v, r)"| C["Ciphertext C"]
+        Enc -->|"4. ZKP: Proof that v in {0,1}"| ZKP["ZKP Proof π"]
     end
 
-    subgraph "Zone 2: Election Server (Public Helper)"
-        C & ZKP -->|5. Submit via API| API[Flask Gateway]
-        API -->|6. Validate ZKP (Verify π)| Val{Valid?}
-        Val -- Yes --> Ledger[Merkle Tree Log 📒]
-        Val -- No --> Reject[Reject Vote ❌]
-        Ledger -->|7. Return Receipt| V
+    subgraph Zone2["Zone 2: Election Server (Public Helper)"]
+        C & ZKP -->|"5. Submit via API"| API["Flask Gateway"]
+        API -->|"6. Validate ZKP (Verify π)"| Val{"Valid?"}
+        Val -->|Yes| Ledger["Merkle Tree Log"]
+        Val -->|No| Reject["Reject Vote"]
+        Ledger -->|"7. Return Receipt"| V
     end
 
-    subgraph "Zone 3: The Trustees (Privacy Guardians)"
-        Ledger -->|8. Homomorphic Sum| Tally[Σ C_i]
-        Tally -->|9. Partial Decryption| T1[Trustee 1]
-        Tally -->|10. Partial Decryption| T2[Trustee 2]
-        T1 & T2 -->|11. Combine Shares| Final[Final Plaintext Result 🏆]
+    subgraph Zone3["Zone 3: The Trustees (Privacy Guardians)"]
+        Ledger -->|"8. Homomorphic Sum"| Tally["Σ C_i"]
+        Tally -->|"9. Partial Decryption"| T1["Trustee 1"]
+        Tally -->|"10. Partial Decryption"| T2["Trustee 2"]
+        T1 & T2 -->|"11. Combine Shares"| Final["Final Plaintext Result"]
     end
 ```
 
